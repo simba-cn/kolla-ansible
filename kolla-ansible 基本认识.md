@@ -1,11 +1,16 @@
-#1. 基本认识
-##1.1. kolla-ansible
+kolla-ansible详解
+=====
+
+1 kolla-ansible
+---
+
 
 kolla-ansible是从kolla项目中分离出来的一个可交付的项目。kolla-ansible负责部署容器化的openstack各个服务和基础设施组件；
 
 而kolla项目现在则单独负责镜像的构建，为kolla-ansible部署提供生产级别的openstack各服务镜像。
 
-##1.2. ansible和docker
+2 ansible和docker
+---
 
 kolla-ansible利用ansible进行openstack服务的配置、编排openstack各个服务容器的部署。
 
@@ -15,7 +20,8 @@ ansible是一种基于python开发的自动化运维工具，它只需要在服�
 
 大致工作原理就是ansible程序调用读取/etc/ansible/ansible.cfg配置文件获取主机列表清单/etc/ansible/hosts文件，获取所要处理的主机列表，然后查看剧本任务，在根据剧本中一系列任务生成一个临时的脚本文件，然后将该脚本文件发送给所管理的主机，脚本文件在远程主机上执行完成后返回结果，然后删除本地临时文件
 
-###ansible主要模块：
+3 ansible主要模块：
+---
 
       Ansible：Ansible核心程序。
 
@@ -29,7 +35,8 @@ ansible是一种基于python开发的自动化运维工具，它只需要在服�
 
        ConnectionPlugins：连接插件，Ansible和Host通信使用
 
-#2. kolla-ansible源码目录
+4 kolla-ansible源码目录
+----
 
 
 	ansible- 包含 Ansible 剧本，用于在 Docker 容器中部署 OpenStack 服务和基础设施组件。
@@ -45,11 +52,15 @@ ansible是一种基于python开发的自动化运维工具，它只需要在服�
 
 
 
-#3. kolla-ansible
+kolla-ansible
+---
+
  kolla-ansible源代码位于/opt/oslostack/venv/bin/kolla-ansible
 
-## 代码部分内容
-kolla-ansible代码调用
+
+kolla-ansible代码调用过程
+---
+
 
 执行kolla-anisble -i multinode deploy 时调用如下：
 
@@ -100,7 +111,8 @@ PLAYBOOK为roles的入口文件site.yml
 kolla-ansible -i ./inventory -e @/opt/oslostack/oslostack.yml deploy ---->调用/opt/oslostack/kolla-ansible/ansible/site.yml---->根据site.yml文件的task调用执行各role
 
 
-##3.1. kolla-ansible代码结构
+5 kolla-ansible代码结构
+----
 
 
 	[root@oslostack01 kolla-ansible]# tree ansible/ -L 1
@@ -149,12 +161,16 @@ kolla-ansible -i ./inventory -e @/opt/oslostack/oslostack.yml deploy ---->调用
 
 	└── site.yml
 
-##3.3. action_plugins目录
+6 action_plugins目录
+----
+
 action_plugins目录下存放的是是kolla-ansible自定义的ansible插件
 
 merge_configs.py，在playboy内通过使用merge_config来合并配置文件模板，生成openstack各服务的配置文件。
 
-##3.4. ./group_vars/all.yml文件
+7 ./group_vars/all.yml文件
+----
+
 all.yml文件作为ansible的变量文件，定义了各类配置信息。比如：配置文件路径、网卡、IP、端口号、各服务的开启等。（部分配置在globa.yml内也做了定义，global.yml具有更高优先级）
 all.yml部分内容：
 
@@ -187,13 +203,18 @@ all.yml部分内容：
 	aodh_api_port: "8042"
 
  
-##3.5. inventory目录
+8 inventory目录
+----
+
 inventory下存放的是主机清单
 
 all-in-one用于单节点环境下，指定要部署的主机和该主机的角色
+
 multinode用于多节点环境，指定要部署的主机和该主机的角色
+
 主机清单也可作为定义变量的变量文件，我们所使用的主机清单是inventory文件。
-### 部分内容
+
+部分内容：
 	指定节点到control组
 
 	[control]
@@ -206,7 +227,9 @@ multinode用于多节点环境，指定要部署的主机和该主机的角色
 
 	node1
 
-##3.6. library目录
+9 library目录
+----
+
 library目录下是kolla-ansible自定义的ansible模块
 
 kolla_container_facts.py: 收集 Docker 容器事实的模块。 它用于检测容器是否在 Kolla 的主机上运行。
@@ -215,8 +238,11 @@ kolla_docker.py: 通过调用docker-py来驱动docker，进行启动容器、删
 
 kolla_toolbox.py: 一个针对在 kolla_toolbox 中调用 ansible 模块的模块Kolla 项目使用的容器。
 
-##3.7. roles目录
-###3.7.1. ansible role简介
+10 roles目录
+===
+
+10.1 ansible role简介
+----
 
 因为在实际中，会有很多不同的业务需要很多不同的playbook文件，很难进行维护。所以ansible采用role的方式对playbook进行目录结构规范。
 
@@ -231,7 +257,8 @@ kolla-ansible代码roles目录分析
 
 下面以roles目录下的neutron为例进行分析，其他服务的结构基本类似。
 
-###3.7.2 neutron目录结构
+10.2 neutron目录结构
+---
 
 
 	[root@oslostack01 roles]# tree neutron/ -L 1
@@ -263,10 +290,12 @@ tasks：部署neutron的各playbook
 templates：neutron各服务配置文件的模板
 
 
-###3.7.3. defaults
+10.3 defaults
+---
+
 defaults下的main.yml，作为当前role的变量文件，定义了关于neutron及neutron各服务的相关参数
 
-####部分内容：
+部分内容：
 
 ---
 
@@ -299,7 +328,9 @@ defaults下的main.yml，作为当前role的变量文件，定义了关于neutro
 
 
 
-###3.7.4. handlers
+10.4 handlers
+---
+
 handlers下的main.yml文件，实际是创建、启动neutron各服务容器的playbook。但handlers只能在被触发的情况下才会去执行相关被触发的Task。
 
 部分内容：
@@ -332,7 +363,9 @@ handlers下的main.yml文件，实际是创建、启动neutron各服务容器的
 
  
 
-###3.7.5. vars
+10.5 vars
+---
+
 
 vars 只定义了一个项目名
 
@@ -344,7 +377,8 @@ main.yml全部内容：
 	---
 	project_name: "neutron"
 
-###3.7.6. tasks
+10.6 tasks
+---
 
 在tasks目录下，有很多的yml文件，其中main.yml是入口执行文件。
 
@@ -454,7 +488,8 @@ bootstrap_service.yml
 	  delegate_to: "{{ groups[neutron_server.group][0] }}"
 
 
-##3.7.7. templates
+10.7 templates
+---
 
 templates目录下存放着很多j2格式的文件，他们都是neutron各服务的配置文件模板，这些模板将被config.yml根据需要生成为各服务的配置文件。
 这里举neutron.conf.j2和neutron-server.json.j2为例进行分析
