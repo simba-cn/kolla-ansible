@@ -63,7 +63,7 @@ openstack-yoga
     echo -n "$_PYTHON_BIN" #不换行输出
 	}
 
-什么是shebang
+shebang
 -----
 
 Shebang，也念做 hashbang，Linux中国翻译组的GOLinux将其翻译为“释伴”，即“解释伴随行”的简称。Unix 术语中，井号通常称为 sharp，hash 或 mesh；而叹号则常常称为 bang。
