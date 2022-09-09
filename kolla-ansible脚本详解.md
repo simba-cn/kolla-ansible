@@ -1,18 +1,22 @@
-#kolla-ansible脚本详解
+kolla-ansible脚本详解
+====
 
 预习
+-----
 
 	>&2 也就是把结果输出到和标准错误一样；之前如果有定义标准错误重定向到某file文件，那么标准输出也重定向到这个file文件。
 
 
 
-##openstack-yoga
+openstack-yoga
+-----
 
 源码下载地址
 
 	git clone -b stable/yoga https://opendev.org/openstack/kolla-ansible.git
 
-##1、kolla-ansible命令入口文件
+1、kolla-ansible命令入口文件
+-----
 
 	(venv) [root@oslostack01 ~]# which kolla-ansible
 	/opt/oslostack/venv/bin/kolla-ansible
@@ -22,11 +26,13 @@
 	/opt/oslostack/venv/bin/kolla-ansible: Bourne-Again shell script, ASCII text executable
 
 
-##2、kolla-ansible脚本结构
+2、kolla-ansible脚本结构
+-----
 
 脚本处理流程是，先定义几个函数，再用case … esac处理不同参数情况的处理。最后一行的process_cmd是脚本入口。
 
-###2.1、get_python_bin 函数
+2.1、get_python_bin 函数
+-----
 
 主要用于获取python执行目录
 
@@ -57,7 +63,8 @@
     echo -n "$_PYTHON_BIN" #不换行输出
 	}
 
-###什么是shebang
+什么是shebang
+-----
 
 Shebang，也念做 hashbang，Linux中国翻译组的GOLinux将其翻译为“释伴”，即“解释伴随行”的简称。Unix 术语中，井号通常称为 sharp，hash 或 mesh；而叹号则常常称为 bang。
 
@@ -68,7 +75,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
 如果#!之后的解释程序是一个可执行文件，那么执行这个脚本时，它就会把文件名及其参数一起作为参数传给那个解释程序去执行。
 
 
-##2.2 check_environment_coherence函数
+2.2 check_environment_coherence函数
+------
 
 主要用于检查python3环境，ansible版本是否正确
 
@@ -121,7 +129,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
     fi
 	}
 
-##2.3 find_base_dir函数
+2.3 find_base_dir函数
+-----
 
 只用来找到kolla-ansible目录
 
@@ -172,7 +181,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
     fi
 	}
 
-#2.4、 install_deps函数
+2.4、 install_deps函数
+----------------------
 
 主要用于安装和检查ansible-galaxy依赖项
 
@@ -186,7 +196,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
 	}
 
 
-##2.5、 process_cmd 函数 
+2.5、 process_cmd 函数 
+-----
 
 直接执行拼接的CMD命令（CMD命令即：ansible-playbook -i 加指定参数）。
 
@@ -200,7 +211,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
 	    fi
 	}
 
-##2.6、 usage函数
+2.6、 usage函数
+-----
 
 使用手册打印值（即在xshell中直接执行kolla-ansible后返回值，用于命令行添加参数--help返回的帮助文档）
 
@@ -249,7 +261,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
 	.................
 	}
 
-##2.7 bash_completion
+2.7 bash_completion
+-----
 
 用于配合bash-completion工具，实现命令行自动补全增强功能
 
@@ -302,7 +315,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
 
 
 
-##2.8、  version函数
+2.8、  version函数
+-----
 
 用于获取kolla_ansible版本
 
@@ -313,7 +327,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
 	    $python_bin -c 'from kolla_ansible.version import version_info; print(version_info)'
 	}
 
-##2.9
+2.9
+-----
 
 	check_environment_coherence #调用函数
 
@@ -346,7 +361,8 @@ Shebang通常出现在类Unix系统的脚本中第一行，作为前两个字符
 	INVENTORIES=()
 
 
-##2.10 while循环
+2.10 while循环
+-----
 
 While判断，当参数个数不为0，开始匹配参数，以”kolla-ansible -i ./multinode deploy”为例分析
 
@@ -392,7 +408,8 @@ While判断，当参数个数不为0，开始匹配参数，以”kolla-ansible 
 		        EXTRA_OPTS="$EXTRA_OPTS -e kolla_action=deploy"
 		(......)
 		esac   # esac是case的结束标记。case ... esac，与switch ... case 语句类似，是一种多分枝选择结构。case匹配一个值或一个模式成功，执行匹配的命令。
-##2.11 
+3 
+-----
 
 	GLOBALS_DIR="${CONFIG_DIR}/globals.d"  #  CONFIG_DIR变量默认值为："/etc/kolla"；
 	EXTRA_GLOBALS=$(find ${GLOBALS_DIR} -maxdepth 1 -type f -name '*.yml' -printf ' -e @%p' 2>/dev/null)
