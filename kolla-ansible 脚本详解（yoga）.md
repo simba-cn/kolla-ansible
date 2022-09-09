@@ -408,7 +408,7 @@ While判断，当参数个数不为0，开始匹配参数，以”kolla-ansible 
 		        EXTRA_OPTS="$EXTRA_OPTS -e kolla_action=deploy"
 		(......)
 		esac   # esac是case的结束标记。case ... esac，与switch ... case 语句类似，是一种多分枝选择结构。case匹配一个值或一个模式成功，执行匹配的命令。
-3 
+3 kolla-ansible 参数调用详解
 -----
 
 	GLOBALS_DIR="${CONFIG_DIR}/globals.d"  #  CONFIG_DIR变量默认值为："/etc/kolla"；
