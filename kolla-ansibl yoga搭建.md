@@ -356,6 +356,7 @@ sudo dnf update
 
 
 ```
+- [Red Hat Enterprise Linux 8 docker and podman](https://access.redhat.com/solutions/3696691)
 - 如果需要可以安装[最新的软件包](https://download.docker.com/linux/centos/8/x86_64/stable/Packages/)
 
 
