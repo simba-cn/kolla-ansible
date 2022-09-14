@@ -2,6 +2,9 @@
 
 - 所有节点都要做
 
+> [openstack官网部署](https://docs.openstack.org/install-guide/)
+
+
 ### 系统
 
 - OpenStack大版本对centos系统的要求对应关系如下：
