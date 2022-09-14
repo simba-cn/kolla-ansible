@@ -114,9 +114,8 @@ ip a
 #### 打开路由转发功能
 
 ```
-echo >> /etc/sysctl.conf <<EOF
-net.ipv4.ip_forward = 1
-EOF
+echo 'net.ipv4.ip_forward = 1'>> /etc/sysctl.conf
+
 sysctl -p /etc/sysctl.conf
 ```
 
