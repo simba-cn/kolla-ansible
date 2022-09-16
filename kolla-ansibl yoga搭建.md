@@ -42,7 +42,7 @@ EOF
 
 ```
  sed -e 's|^mirrorlist=|#mirrorlist=|g' \
-         -e 's|^#baseurl=http://mirror.centos.org/$contentdir|baseurl=https://mirrors.ustc.edu.cn/centos|g' \
+         -e 's|^#baseurl=http://mirror.centos.org/$contentdir|baseurl=https://mirrors.aliyun.com/centos|g' \
          -i.bak \
          /etc/yum.repos.d/CentOS-Stream-AppStream.repo \
          /etc/yum.repos.d/CentOS-Stream-BaseOS.repo \
